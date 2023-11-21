@@ -22,6 +22,10 @@ io.on("connection", (socket) => {
         console.log(data)
         socket.broadcast.emit("receive_message", data)
     });
+
+    socket.on("disconnect", ()=>{
+        console.log("User disconnect", socket.id);
+    });
 }) 
 
 server.listen(3001, () => {
