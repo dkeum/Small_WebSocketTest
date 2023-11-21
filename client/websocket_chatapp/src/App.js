@@ -8,6 +8,8 @@ function App() {
   const [message, setMessage] = useState("");
   const [messageReceived, setMessageReceived] = useState("");
 
+  const rooms = [1, 2, 3, 4, 5];
+
   const [currentUsers, setCurrentUsers] = useState([
     { Name: "You", ID: 0, profilePic: "" },
   ]);
@@ -32,17 +34,32 @@ function App() {
     };
   }, [socket]);
 
+  const joinRoom = (room) => {
+    socket.emit("join_room", room);
+  }
+
   return (
     <div className="min-h-screen bg-black">
       <div
         className="bg-repeat ... w-screen h-screen grid grid-cols-4 gap-4"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
-        <div className="min-h-screen col-span-1 sm:min-w-[100px] md:min-w-[300px] max-w-lg border-r-4 border-yellow-200 bg-black">
+        <div className="flex flex-col items-center justify-center min-h-screen col-span-1 sm:min-w-[100px] md:min-w-[300px] max-w-lg border-r-4 border-yellow-200 bg-black">
           <h1 className="text-white text-center text-2xl font-bold my-5">
-            Connected <br /> Users
+            Rooms
           </h1>
-          <hr className="border-2 mx-4" />
+          <hr className="border-2 w-full" />
+
+          {rooms.map((room) => (
+            <button
+              className=" text-gray-200 font-semibold text-center border-2 border-gray-500  rounded-lg my-5 hover:bg-slate-400"
+              key={room}
+              onClick={() =>{joinRoom(room)}}
+            >
+              {" "}
+              <p className="text-xl mx-3 my-2">Room: {room}</p>
+            </button>
+          ))}
         </div>
 
         <div className="flex justify-center items-center col-span-3">
@@ -58,7 +75,7 @@ function App() {
               }}
               className="flex flex-col justify-center items-center gap-y-3 mt-5"
             >
-              <div className="h-4/6 md:min-h-[400px] max-h-screen w-1/3 border border-yellow-100 rounded-md relative">
+              <div className="h-4/6 md:min-h-[400px] md:min-w-[400px] max-h-screen w-1/3 border border-yellow-100 rounded-md relative">
                 <div className="absolute inset-0 border-yellow-500 border-8 rounded-lg blur"></div>
               </div>
 
