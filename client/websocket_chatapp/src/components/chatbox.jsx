@@ -1,17 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef} from "react";
 
-export default function Chatbox({ socket, roomNum, username }) {
+
+export default function Chatbox({ socket, roomNum, username}) {
   const [message, setMessage] = useState("");
   const [messagelist, setMessageList] = useState([]);
+  const messageEl = useRef(null);
 
   useEffect(() => {
     const messageListener = (data) => {
-      console.log("this is the data from client side: ");
-      console.log(data);
       setMessageList((prevList) => [...prevList, data.message]);
     };
     socket.on("receive_message", messageListener);
   }, [socket]);
+
+  useEffect(() => {
+    if (messageEl) {
+      messageEl.current.addEventListener('DOMNodeInserted', event => {
+        const { currentTarget: target } = event;
+        target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+      });
+    }
+  }, [])
+
+  useEffect(() => {
+    setMessageList([]);
+  }, [roomNum])
 
   const onSendMessage = async (e) => {
     e.preventDefault();
@@ -31,15 +44,15 @@ export default function Chatbox({ socket, roomNum, username }) {
 
   return (
     <form className="flex flex-col justify-center items-center gap-y-3 mt-5">
-      <div className="h-4/6 md:min-h-[400px] md:min-w-[400px] max-h-screen w-1/3 border border-yellow-100 rounded-md relative">
-        <div className="absolute inset-0 border-yellow-500 border-8 rounded-lg blur"></div>
+      <div className="h-4/6 md:min-h-[400px] md:min-w-[400px] max-h-[415px] w-1/3 border border-yellow-100 rounded-md relative overflow-y-auto"  ref={messageEl}>
+        <div className="sticky inset-0 border-yellow-500 border-8 rounded-lg blur "></div>
 
         <h1 className="absolute top-2 left-1 mx-5 font-semibold text-xl text-white">
           {" "}
           Joined Room: {roomNum}{" "}
         </h1>
         <div className="mt-14">
-          {messagelist.slice(-6).map((messageContent, i) => (
+          {messagelist.map((messageContent, i) => (
             <p key={i} className=" mx-5 my-1 ">
               {messageContent.author === username ? (
                 <div className="flex flex-start">
@@ -72,6 +85,7 @@ export default function Chatbox({ socket, roomNum, username }) {
               )}
             </p>
           ))}
+          
         </div>
       </div>
 

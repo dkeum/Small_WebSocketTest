@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import io from "socket.io-client";
 import backgroundImage from "./assets/stars.jpg"; // Import the background image
 import Chatbox from "./components/chatbox";
@@ -7,8 +7,9 @@ const socket = io.connect("http://localhost:3001");
 
 function App() {
   const [username, setUsername] = useState("Guest");
-  const [numofPeople, setNumofPeople] = useState(1);
+  // const [numofPeople, setNumofPeople] = useState(1);
   const [showChat, setShowChat] = useState(false);
+  
 
   const [roomNum, setRoomNum] = useState(1);
   const rooms = [1, 2, 3, 4, 5];
@@ -18,8 +19,9 @@ function App() {
     setRoomNum(room);
     setShowChat(true);
   };
+ 
 
-  useEffect(() => {});
+
 
   return (
     <div className="min-h-screen bg-black">
@@ -55,10 +57,10 @@ function App() {
 
             {showChat ? (
               <div className="flex flex-row gap-x-20 justify-between items-center ">
-                <div className="text-white text-2xl font-semibold">
+                {/* <div className="text-white text-2xl font-semibold">
                   Number of People: <br />{" "}
                   <div className="text-center">{numofPeople}</div>
-                </div>
+                </div> */}
                 <Chatbox
                   socket={socket}
                   roomNum={roomNum}
